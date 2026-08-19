@@ -20,7 +20,7 @@
     ['AV218',-34.5400,-58.3950,'AVIANCA · A320','orange',205,0]
   ];
   function distance(a,b){return Math.hypot(a.lat-b.lat,a.lng-b.lng)}
-  function gameIcon(t,m,c,h){return L.divIcon({className:'',iconSize:[60,66],iconAnchor:[30,31],html:`<div class="plane ${c||''}"><div class="tag">${t}</div><div class="ring"><svg viewBox="0 0 60 60" style="transform:rotate(${h}deg)"><path d="M30 7 L35 25 L51 31 L51 35 L34 33 L34 49 L39 54 L39 56 L30 52 L21 56 L21 54 L26 49 L26 33 L9 35 L9 31 L25 25 Z"/></svg></div><div class="meta">${m}</div></div>`})}
+  function gameIcon(t,m,c,h){return L.divIcon({className:'',iconSize:[18,18],iconAnchor:[9,9],html:`<div class="plane ${c||''}" style="--h:${h}deg"><div class="flight-label">${t}<span>${m}</span></div></div>`})}
   function setScore(){document.querySelector('.header-data').innerHTML=`<span>OPERACIONES<b>${String(score/10).padStart(2,'0')}</b></span><span>PUNTOS<b>${score}</b></span>`}
   function spawn(){
     if(!active)return;
