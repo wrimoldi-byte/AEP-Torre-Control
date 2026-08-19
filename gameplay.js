@@ -14,9 +14,9 @@
   const flights = [];
   let selected = null, score = 0, active = false, gameOver = false, lastFrame = performance.now();
   const templates = [
-    ['LA454',-34.5500,-58.4290,'LATAM · A320','orange',125,0],
-    ['AR1641',-34.5680,-58.4020,'AEROLÍNEAS · B737','',305,1],
-    ['G37632',-34.5470,-58.4100,'GOL · B737','green',165,0],
+    ['LA454',-34.5545,-58.4240,'LATAM · A320','orange',125,0],
+    ['AR1641',-34.5635,-58.4090,'AEROLÍNEAS · B737','',305,1],
+    ['G37632',-34.5520,-58.4090,'GOL · B737','green',180,0],
     ['JA3301',-34.5700,-58.4250,'JETSMART · A320','',35,1],
     ['AV218',-34.5500,-58.3960,'AVIANCA · A320','orange',245,0]
   ];
@@ -28,9 +28,9 @@
   function spawn(index){
     if(!active||gameOver)return;
     const d=templates[index%templates.length];
-    const f={call:d[0],model:d[3],color:d[4],heading:d[5],runway:d[6],target:null,landing:false,speed:.00028,marker:null,waypoint:null};
+    const f={call:d[0],model:d[3],color:d[4],heading:d[5],runway:d[6],target:null,landing:false,speed:.00018,marker:null,waypoint:null};
     f.marker=L.marker([d[1],d[2]],{icon:icon(f),interactive:true,keyboard:false,bubblingMouseEvents:false}).addTo(map);
-    const markerElement=f.marker.getElement();L.DomEvent.disableClickPropagation(markerElement);markerElement.addEventListener('click',event=>{event.stopPropagation();if(!active)return;setSelected(selected,false);selected=f;setSelected(f,true);status.textContent=`${f.call} seleccionado`;hint.textContent=`Marcá un rumbo o tocá cerca de la cabecera ${runwayName(f.runway)} para aterrizar.`});
+    const markerElement=f.marker.getElement();L.DomEvent.disableClickPropagation(markerElement);const choose=event=>{event.stopPropagation();if(!active)return;setSelected(selected,false);selected=f;setSelected(f,true);status.textContent=`${f.call} seleccionado`;hint.textContent=`Marcá un rumbo o tocá cerca de la cabecera ${runwayName(f.runway)} para aterrizar.`};markerElement.addEventListener('pointerdown',choose);markerElement.addEventListener('click',choose);
     flights.push(f);
   }
   function finishTurn(a,b){gameOver=true;active=false;selected=null;status.textContent='⚠ PÉRDIDA DE SEPARACIÓN';hint.textContent=`${a.call} y ${b.call} se acercaron demasiado. Turno finalizado.`;button.disabled=false;button.textContent='REINTENTAR TURNO'}
