@@ -14,11 +14,11 @@
   const flights = [];
   let selected = null, score = 0, active = false, gameOver = false, lastFrame = performance.now();
   const templates = [
-    ['LA454',-34.5450,-58.4400,'LATAM · A320','orange',125,0],
-    ['AR1641',-34.5730,-58.3920,'AEROLÍNEAS · B737','',305,1],
-    ['G37632',-34.5380,-58.4140,'GOL · B737','green',150,0],
-    ['JA3301',-34.5760,-58.4250,'JETSMART · A320','',35,1],
-    ['AV218',-34.5480,-58.3880,'AVIANCA · A320','orange',245,0]
+    ['LA454',-34.5500,-58.4290,'LATAM · A320','orange',125,0],
+    ['AR1641',-34.5680,-58.4020,'AEROLÍNEAS · B737','',305,1],
+    ['G37632',-34.5470,-58.4100,'GOL · B737','green',165,0],
+    ['JA3301',-34.5700,-58.4250,'JETSMART · A320','',35,1],
+    ['AV218',-34.5500,-58.3960,'AVIANCA · A320','orange',245,0]
   ];
   function distance(a,b){return Math.hypot(a.lat-b.lat,(a.lng-b.lng)*.82)}
   function runwayName(index){return index===0?'13':'31'}
@@ -28,7 +28,7 @@
   function spawn(index){
     if(!active||gameOver)return;
     const d=templates[index%templates.length];
-    const f={call:d[0],model:d[3],color:d[4],heading:d[5],runway:d[6],target:null,landing:false,speed:.000105,marker:null,waypoint:null};
+    const f={call:d[0],model:d[3],color:d[4],heading:d[5],runway:d[6],target:null,landing:false,speed:.00028,marker:null,waypoint:null};
     f.marker=L.marker([d[1],d[2]],{icon:icon(f),interactive:true,keyboard:false,bubblingMouseEvents:false}).addTo(map);
     const markerElement=f.marker.getElement();L.DomEvent.disableClickPropagation(markerElement);markerElement.addEventListener('click',event=>{event.stopPropagation();if(!active)return;setSelected(selected,false);selected=f;setSelected(f,true);status.textContent=`${f.call} seleccionado`;hint.textContent=`Marcá un rumbo o tocá cerca de la cabecera ${runwayName(f.runway)} para aterrizar.`});
     flights.push(f);
