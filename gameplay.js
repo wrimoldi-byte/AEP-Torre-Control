@@ -22,15 +22,15 @@
   ];
   function distance(a,b){return Math.hypot(a.lat-b.lat,(a.lng-b.lng)*.82)}
   function runwayName(index){return index===0?'13':'31'}
-  function setScore(){document.querySelector('.header-data').innerHTML=`<span>OPERACIONES<b>${String(score/10).padStart(2,'0')}</b></span><span>PUNTOS<b>${score}</b></span>`}
-  function icon(f){return L.divIcon({className:'',iconSize:[140,50],iconAnchor:[25,25],html:`<div class="aircraft-hit ${f.color}"><svg class="aircraft-svg" viewBox="0 0 60 60" style="transform:rotate(${f.heading}deg)" aria-hidden="true"><path d="M30 3 36 23 54 30 54 35 35 33 35 49 41 55 41 58 30 53 19 58 19 55 25 49 25 33 6 35 6 30 24 23Z"/></svg><div class="flight-label">${f.call}<span>${f.model}</span></div></div>`})}
+  function setScore(){const clock=document.querySelector('#clock')?.textContent||'--:--';document.querySelector('.header-data').innerHTML=`<span>OPERACIONES<b>${String(score/10).padStart(2,'0')}</b></span><span>PUNTOS<b>${score}</b></span><span>HORA LOCAL<b id="clock">${clock}</b></span>`}
+  function icon(f){return L.divIcon({className:'',iconSize:[140,50],iconAnchor:[25,25],html:`<div class="aircraft-hit ${f.color}" role="button" aria-label="Seleccionar ${f.call}"><svg class="aircraft-svg" viewBox="0 0 60 60" style="transform:rotate(${f.heading}deg)" aria-hidden="true"><path d="M30 3 36 23 54 30 54 35 35 33 35 49 41 55 41 58 30 53 19 58 19 55 25 49 25 33 6 35 6 30 24 23Z"/></svg><div class="flight-label">${f.call}<span>${f.model}</span></div></div>`})}
   function setSelected(f,on){f?.marker.getElement()?.querySelector('.aircraft-hit')?.classList.toggle('selected',on)}
   function spawn(index){
     if(!active||gameOver)return;
     const d=templates[index%templates.length];
     const f={call:d[0],model:d[3],color:d[4],heading:d[5],runway:d[6],target:null,landing:false,speed:.000105,marker:null,waypoint:null};
-    f.marker=L.marker([d[1],d[2]],{icon:icon(f),interactive:true,keyboard:false}).addTo(map);
-    f.marker.on('click',event=>{L.DomEvent.stopPropagation(event);if(!active)return;setSelected(selected,false);selected=f;setSelected(f,true);status.textContent=`${f.call} seleccionado`;hint.textContent=`Marcá un rumbo o tocá cerca de la cabecera ${runwayName(f.runway)} para aterrizar.`});
+    f.marker=L.marker([d[1],d[2]],{icon:icon(f),interactive:true,keyboard:false,bubblingMouseEvents:false}).addTo(map);
+    const markerElement=f.marker.getElement();L.DomEvent.disableClickPropagation(markerElement);markerElement.addEventListener('click',event=>{event.stopPropagation();if(!active)return;setSelected(selected,false);selected=f;setSelected(f,true);status.textContent=`${f.call} seleccionado`;hint.textContent=`Marcá un rumbo o tocá cerca de la cabecera ${runwayName(f.runway)} para aterrizar.`});
     flights.push(f);
   }
   function finishTurn(a,b){gameOver=true;active=false;selected=null;status.textContent='⚠ PÉRDIDA DE SEPARACIÓN';hint.textContent=`${a.call} y ${b.call} se acercaron demasiado. Turno finalizado.`;button.disabled=false;button.textContent='REINTENTAR TURNO'}
